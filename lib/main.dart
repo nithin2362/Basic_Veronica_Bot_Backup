@@ -1,11 +1,12 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:untitled/cleanliness.dart';
 import 'botcommands.dart';
 import 'welcome.dart';
-import 'map.dart';
 import 'lost_found.dart';
-
+import 'classes.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 
 void main() {
@@ -63,27 +64,7 @@ class MyHomePage extends StatefulWidget {
 
 
 
-class Home1 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('First Route'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          child: Text('Open route'),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Mapscreen()),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
+
 
 class _MyHomePageState extends State<MyHomePage> {
 
@@ -110,64 +91,78 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     super.initState();
   }
-
-
-
-
-
   void response(query) {
     addQueries();
-    var msg,i;
-    if(query.contains("!lost"))
+    var msg,i,ind;
+    if(query.startsWith("!lost") && query.split(',').length == 3)
     {
-      List lostData = query.split(" ");
-      lostitems.add(Item(lostData[1], lostData[2], lostData[3]));
+      List lostData = query.substring(6).split(',');
+      print(lostData);
+      lostitems.add(Item(lostData[0], lostData[1], lostData[2]));
+      for(i = 0;i<coordinators.length;++i)
+      {
+        if(coordinators[i].place == lostData[2])
+        {
+          ind = i;
+          break;
+        }
+      }
+
+
       if(!checkFounditems(lostitems.last))
       {
         msg = "Details Noted. Please convey this to";
 
-        for(i = 0;i<coordinators.length;++i)
-        {
-          if(coordinators[i].block == lostData[3])
-          {
-            setState(() {
-              messsages.insert(0, {
-                "data": 0,
-                "message": "${msg} Coordinator: ${coordinators[i].name},Phone: ${coordinators[i].phone_number}, Block: ${coordinators[i].block}"
-              });
+        setState(() {
+          messsages.insert(0, {
+            "data": 0,
+            "message": "${msg} Co-ordinator: ${coordinators[ind].name},Phone: ${coordinators[ind].phone_number},Place: ${coordinators[ind].place}"
+          });
 
-            });
-            print(lostitems[0].itemName);
-
-          }
-
-        }
+        });
       }
       else
-        {
+      {
+        msg = "An item similar to yours is found. Contact,";
+        setState(() {
+          messsages.insert(0, {
+            "data": 0,
+            "message": "${msg} Co-ordinator: ${coordinators[i].name},Phone: ${coordinators[i].phone_number}, Place: ${coordinators[i].place}, for more details."
+          });
 
-          msg = "An item similar to yours is found. Contact,";
-
-          for(i = 0;i<coordinators.length;++i)
-            {
-              if(coordinators[i].block == lostData[3])
-                {
-                  setState(() {
-                    messsages.insert(0, {
-                      "data": 0,
-                      "message": "${msg} Coordinator: ${coordinators[i].name},Phone: ${coordinators[i].phone_number}, Block: ${coordinators[i].block}, for more details."
-                    });
-
-                  });
-                  lostData.last.isFound = true;
-                }
-            }
+        });
+        lostitems.removeLast();
 
 
 
 
 
+      }
+      print(lostitems);
+    }
+    else if(query.startsWith("!found") && query.split(',').length == 3)
+    {
+      List foundData = query.substring(7).split(',');
+      print(foundData);
+      var item = Item(foundData[0], foundData[1], foundData[2]);
+      for (i = 0; i < coordinators.length; ++i) {
+        if (coordinators[i].place == foundData[2]) {
+          ind = i;
+          break;
         }
+      }
+      addFounditem(item);
+      msg = "Details noted. Please contact";
+      setState(() {
+        messsages.insert(0, {
+          "data": 0,
+          "message": "${msg} Co-ordinator: ${coordinators[i]
+              .name},Phone: ${coordinators[i]
+              .phone_number}, Place: ${coordinators[i]
+              .place},and convey this."
+        });
+      });
+
 
     }
 
@@ -181,23 +176,101 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
+    else if(query.startsWith("!cleanliness") && query.split(',').length == 3)
+    {
+      List cleanData = query.substring(13).split(',');
+      print(cleanData);
+      for(i = 0;i<cleanliness_coordinators.length;++i)
+      {
+        if(cleanliness_coordinators[i].location == cleanData[1])
+        {
+          ind = i;
+          break;
+        }
+      }
+      addSanitationReport(cleanData);
+      msg = "Sanitation Report Noted. Please contact";
+      setState(() {
+        messsages.insert(0, {
+          "data": 0,
+          "message": "${msg} Co-ordinator: ${cleanliness_coordinators[i].name},Phone: ${cleanliness_coordinators[i].phone_number}, Location: ${cleanliness_coordinators[i].location},and convey this."
+        });
+
+      });
+    }
 
 
+    else if(query.startsWith("!item_returned") && query.split(',').length == 3)
+    {
+      List retData = query.substring(15).split(',');
+      print(retData);
+      var item = Item(retData[0],retData[1],retData[2]);
+      if(updateFounditem(item))
+      {
+        setState(() {
+          messsages.insert(0, {
+            "data": 0,
+            "message": "Status Updated !"
+          });
 
+        });
+      }
+      else
+      {
+        setState(() {
+          messsages.insert(0, {
+            "data": 0,
+            "message": "The Given item is not found in the Founditems list !!"
+          });
 
+        });
+      }
+    }
 
-   else
-     {
-       String response = getResopnse(query);
-       setState(() {
-         messsages.insert(0, {
-           "data": 0,
-           "message": response
-         });
-       });
-     }
+    else if(query == "!map")
+    {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SizedBox.fromSize(
+                size: Size(100, 1000),
+                child: WebView(
+                  initialUrl: "https://goo.gl/maps/JTt8tjqgtK4q6dAH9",
+                  javascriptMode: JavascriptMode.unrestricted,
+                ),
+              )));
+    }
+    else if(query == "!admission")
+    {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SizedBox.fromSize(
+                size: Size(100, 1000),
+                child: WebView(
+                  initialUrl: "https://www.svce.ac.in/admission/programs-offered/",
+                  javascriptMode: JavascriptMode.unrestricted,
+                ),
+              )));
+    }
+    else
+    {
+      String response = getResopnse(query);
+      setState(() {
+        messsages.insert(0, {
+          "data": 0,
+          "message": response
+        });
+      });
+    }
 
   }
+
+
+
+
+
+
 
 
 
@@ -268,14 +341,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
               child: ListTile(
 
-                leading: IconButton(
-                  icon: Icon(Icons.camera_alt, color: Colors.blue[900], size: 35,),
-                  onPressed: (){
-                    print('Button Pressed !');
-                  },
-
-
-                ),
 
                 title: Container(
                   height: 35,

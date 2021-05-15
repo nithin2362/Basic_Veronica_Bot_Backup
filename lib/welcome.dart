@@ -9,18 +9,27 @@ List welcomeMsg()
 Command         Description
 
 
-!lost itemName itemDescription block_number :                 Used when user lost 
+!lost itemName,itemDescription,place :                 Used when user lost 
                                                               one of his\/her 
                                                                belongings.
 
-!found:               Used to intimate the 
+!found itemName,itemDescription,place :               Used to intimate the 
                           info regarding any 
                           lost object.
 
-!cleanliness :    Used to intimate the 
+!cleanliness placeDescription,place,status:    Used to intimate the 
                           tidiness report of a 
                           particular block
                           \/classroom.
+
+
+!admission:           Used to view admission details
+                       at SVCE.
+                       
+                       
+!item_returned:         Used when a found item is 
+                        returned to its owner.
+
 
 !map:                 Used to locate Sri 
                         Venkateswara College 
