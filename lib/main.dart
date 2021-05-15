@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'botcommands.dart';
 import 'welcome.dart';
 import 'map.dart';
+import 'lost_found.dart';
 
 
 
@@ -116,12 +117,59 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void response(query) {
     addQueries();
-    if(query == "!map")
+    var msg,i;
+    if(query.contains("!lost"))
+    {
+      List lostData = query.split(" ");
+      lostitems.add(Item(lostData[1], lostData[2], lostData[3]));
+      if(!checkFounditems(lostitems.last))
       {
-        setState(() {
-          Home1();
-        });
+        msg = "Details Noted. Please convey this to";
+
+        for(i = 0;i<coordinators.length;++i)
+        {
+          if(coordinators[i].block == lostData[3])
+          {
+            setState(() {
+              messsages.insert(0, {
+                "data": 0,
+                "message": "${msg} Coordinator: ${coordinators[i].name},Phone: ${coordinators[i].phone_number}, Block: ${coordinators[i].block}"
+              });
+
+            });
+            print(lostitems[0].itemName);
+
+          }
+
+        }
       }
+      else
+        {
+
+          msg = "An item similar to yours is found. Contact,";
+
+          for(i = 0;i<coordinators.length;++i)
+            {
+              if(coordinators[i].block == lostData[3])
+                {
+                  setState(() {
+                    messsages.insert(0, {
+                      "data": 0,
+                      "message": "${msg} Coordinator: ${coordinators[i].name},Phone: ${coordinators[i].phone_number}, Block: ${coordinators[i].block}, for more details."
+                    });
+
+                  });
+                  lostData.last.isFound = true;
+                }
+            }
+
+
+
+
+
+        }
+
+    }
 
 
 
@@ -129,7 +177,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-    String response = getResopnse(query);
 
 
 
@@ -138,12 +185,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-    setState(() {
-      messsages.insert(0, {
-        "data": 0,
-        "message": response
-      });
-    });
+
+   else
+     {
+       String response = getResopnse(query);
+       setState(() {
+         messsages.insert(0, {
+           "data": 0,
+           "message": response
+         });
+       });
+     }
 
   }
 

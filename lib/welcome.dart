@@ -9,9 +9,9 @@ List welcomeMsg()
 Command         Description
 
 
-!lost :                 Used when user lost 
-                            one of his\/her 
-                            belongings.
+!lost itemName itemDescription block_number :                 Used when user lost 
+                                                              one of his\/her 
+                                                               belongings.
 
 !found:               Used to intimate the 
                           info regarding any 
