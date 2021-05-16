@@ -17,7 +17,7 @@ Command         Description
                           info regarding any 
                           lost object.
 
-!cleanliness placeDescription,place,status:    Used to intimate the 
+!cleanliness place,cleanliness_Status:    Used to intimate the 
                           tidiness report of a 
                           particular block
                           \/classroom.
@@ -27,6 +27,11 @@ Command         Description
                        at SVCE.
                        
                        
+!lost_items:          Used to view all the lost items
+
+
+!found_items:         Used to view all the items which are found.
+
 !item_returned:         Used when a found item is 
                         returned to its owner.
 
@@ -40,7 +45,7 @@ Command         Description
                         any current events on 
                         that day.
 
-!notes:               Used to obtain notes 
+!notes subject,semester:               Used to obtain notes 
                         for a particular subject 
                         (according to the 
                           department).

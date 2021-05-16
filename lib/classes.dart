@@ -1,6 +1,6 @@
 class Coordinator
 {
-  String name,phone_number,place;
+  String name,place,phone_number;
   Coordinator(var v1,var v2,var v3)
   {
     name = v1;

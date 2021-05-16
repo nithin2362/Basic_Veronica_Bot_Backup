@@ -7,7 +7,7 @@ import 'welcome.dart';
 import 'lost_found.dart';
 import 'classes.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import 'json.dart';
 
 void main() {
   runApp(MyApp());
@@ -89,6 +89,9 @@ class _MyHomePageState extends State<MyHomePage> {
         "message": value[1],
       });
     });
+
+    addCoordinators();
+    addcleanlinessCoordinators();
     super.initState();
   }
   void response(query) {
@@ -176,13 +179,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-    else if(query.startsWith("!cleanliness") && query.split(',').length == 3)
+    else if(query.startsWith("!cleanliness") && query.split(',').length == 2)
     {
       List cleanData = query.substring(13).split(',');
       print(cleanData);
       for(i = 0;i<cleanliness_coordinators.length;++i)
       {
-        if(cleanliness_coordinators[i].location == cleanData[1])
+        if(cleanliness_coordinators[i].place == cleanData[0])
         {
           ind = i;
           break;
@@ -193,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         messsages.insert(0, {
           "data": 0,
-          "message": "${msg} Co-ordinator: ${cleanliness_coordinators[i].name},Phone: ${cleanliness_coordinators[i].phone_number}, Location: ${cleanliness_coordinators[i].location},and convey this."
+          "message": "${msg} Co-ordinator: ${cleanliness_coordinators[i].name},Phone: ${cleanliness_coordinators[i].phone_number}, Location: ${cleanliness_coordinators[i].place},and convey this."
         });
 
       });
@@ -226,6 +229,40 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       }
     }
+    else if(query == "!lost_items")
+      {
+        var items = viewLostitems(),v;
+        for(var i = 0;i<items.length;++i)
+          {
+            v = items[i].split(",");
+
+            setState(() {
+              messsages.insert(0, {
+                "data": 0,
+                "message": "ITEM ID: ${i+1}., ITEM NAME: ${v[0]}, ITEM DESCRIPTION: ${v[1]}, PLACE WHERE IT IS LOST: ${v[2]}"
+              });
+
+            });
+          }
+      }
+    else if(query == "!found_items")
+    {
+      var items = viewFounditems(),v;
+      for(var i = 0;i<items.length;++i)
+      {
+
+        v = items[i].split(",");
+
+
+        setState(() {
+          messsages.insert(0, {
+            "data": 0,
+            "message": "ITEM ID: ${i+1}., ITEM NAME: ${v[0]}, ITEM DESCRIPTION: ${v[1]}, PLACE WHERE IT IS FOUND: ${v[2]}"
+          });
+
+        });
+      }
+    }
 
     else if(query == "!map")
     {
@@ -249,6 +286,37 @@ class _MyHomePageState extends State<MyHomePage> {
                 size: Size(100, 1000),
                 child: WebView(
                   initialUrl: "https://www.svce.ac.in/admission/programs-offered/",
+                  javascriptMode: JavascriptMode.unrestricted,
+                ),
+              )));
+    }
+    else if(query.startsWith("!notes") && query.split(',').length == 2)
+    {
+      List details = query.substring(7).split(',');
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SizedBox.fromSize(
+                size: Size(100, 1000),
+                child: WebView(
+                  initialUrl: getLink(details[0],details[1]),
+                  javascriptMode: JavascriptMode.unrestricted,
+                ),
+              )));
+    }
+
+
+
+
+    else if(query == "!events")
+    {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SizedBox.fromSize(
+                size: Size(100, 1000),
+                child: WebView(
+                  initialUrl: "https://www.svce.ac.in/flashnews/",
                   javascriptMode: JavascriptMode.unrestricted,
                 ),
               )));

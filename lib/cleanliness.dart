@@ -1,28 +1,35 @@
 import 'classes.dart';
-
+import 'json.dart';
 class Place
 {
-  String placeDescription,location,status;
+  String place,status;
 
-  Place(var v1,var v2,{var v3:"clean"})
+  Place(var v1,{var v2:"clean"})
   {
-    placeDescription = v1;
-    location = v2;
-    status = v3;
+
+    place = v1;
+    status = v2;
   }
 
 }
 
 
-List cleanliness_coordinators = [Coordinator("Kiran","987654321","5"),Coordinator("Raman","987654321","2"),Coordinator("Sai","987654321","1"),Coordinator("Rahman","987654321","3"),Coordinator("Joseph","987654321","4")];
+List cleanliness_coordinators = [];
 List complaints = [];
 
 
 void addSanitationReport(cleanData)
 {
-  complaints.add(Place(cleanData[0],cleanData[1],v3: cleanData[2]));
+  complaints.add(Place(cleanData[0],v2:cleanData[1]));
 }
 
 
+void addcleanlinessCoordinators()
+{
+  for(var i = 0;i<places.length;++i)
+  {
+    cleanliness_coordinators.add(Coordinator(places[i]["Cleanliness Co-ordinator"],places[i]["Cleanliness Co-ordinator Mobile No"],places[i]["Place"]));
+  }
 
+}
 

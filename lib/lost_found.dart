@@ -1,8 +1,26 @@
 import 'classes.dart';
+import 'json.dart';
 
 
 
-List lostitems = [],founditems = [Item("watch","brown colour","3"),Item("bag","brown colour","3"),Item("wallet","black colour","2")],coordinators = [Coordinator("Hari Kheshav","987654321","3"),Coordinator("Kishore","987654321","2"),Coordinator("Buvanesh","987654321","4"),Coordinator("Nithin","987654321","5"),Coordinator("Kitty","987654321","OAT")];
+
+List lostitems = [],founditems = [Item("watch","brown colour","3"),Item("bag","brown colour","3"),Item("wallet","black colour","2")];
+List coordinators = [];
+var i = 0;
+
+void addCoordinators()
+{
+  for(i = 0;i<places.length;++i)
+  {
+    coordinators.add(Coordinator(places[i]["Lost_Found Co-ordinator"],places[i]["Lost_Found Co-ordinator Mobile No"],places[i]["Place"]));
+  }
+
+}
+
+
+
+
+
 void refreshLostitems()
 {
   for(var i = 0;i<lostitems.length;++i)
@@ -46,3 +64,22 @@ bool updateFounditem(item)
   }
 }
 
+
+List viewLostitems()
+{
+  var lost_items = [];
+  for(var i = 0;i<lostitems.length;++i)
+    {
+      lost_items.add("${lostitems[i].itemName},${lostitems[i].description},${lostitems[i].place}");
+    }
+  return lost_items;
+}
+List viewFounditems()
+{
+  var found_items = [];
+  for(var i = 0;i<founditems.length;++i)
+  {
+    found_items.add("${founditems[i].itemName},${founditems[i].description},${founditems[i].place}");
+  }
+  return found_items;
+}
