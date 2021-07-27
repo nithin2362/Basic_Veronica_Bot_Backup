@@ -143,6 +143,16 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       print(lostitems);
     }
+    else if(query.startsWith('!commands'))
+    {
+      setState(() {
+      messsages.insert(0, {
+        "data": 0,
+        "message": commands,
+      });
+    });
+
+    }
     else if(query.startsWith("!found") && query.split(',').length == 3)
     {
       List foundData = query.substring(7).split(',');
@@ -185,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print(cleanData);
       for(i = 0;i<cleanliness_coordinators.length;++i)
       {
-        if(cleanliness_coordinators[i].place == cleanData[0])
+        if(cleanliness_coordinators[i].place.toString().toLowerCase() == cleanData[0].toString().toLowerCase())
         {
           ind = i;
           break;

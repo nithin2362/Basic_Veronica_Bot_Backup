@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 var dt = DateTime.now();
 class Queries
 {
@@ -41,10 +43,38 @@ String getDate()
   Map months = {
     1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'
   };
-  return '${months[dt.month]} ${dt.day}, ${dt.year}';
+  return 'Today is ${months[dt.month]} ${dt.day}, ${dt.year}';
 }
 
 String getTime()
 {
-  return '${dt.hour}:${dt.minute}:${dt.second}';
+  String time = '';
+  TimeOfDay _timeOfDay = TimeOfDay.now();
+  var hour = _timeOfDay.hourOfPeriod;
+  var minute = _timeOfDay.minute;
+  String period = _timeOfDay.period == DayPeriod.am ? "AM" : "PM";
+  if(period == 'PM')
+  {
+    if(hour == 0)
+      hour = 12;
+    else if(hour > 12)
+      hour -= 12;
+  }
+  else if(period == 'AM')
+  {
+    if(hour == 0)
+      hour = 12;
+  }
+
+if(hour < 10)
+    time += '0' + hour.toString();
+else
+  time += hour.toString();
+  
+  time += ':';
+  if(minute < 10)
+    time += '0' + minute.toString();
+  else
+    time += minute.toString();
+  return 'Its ' + time + ' ' + period + ' now';
 }
